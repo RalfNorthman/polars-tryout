@@ -12,7 +12,7 @@ static GLOBAL: MiMalloc = MiMalloc;
 async fn load(table: &str) -> Result<DataFrame> {
     let client = Client::new();
     let res = client
-        .get(format!("http://localhost:8070/api/tables{table}"))
+        .get(format!("http://localhost:8070/api/tables/{table}"))
         .header(ACCEPT, "application/vnd.apache.arrow.file")
         .send()
         .await?
