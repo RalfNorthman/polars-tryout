@@ -10,4 +10,3 @@ anyhow = "1.0.57"
 mimalloc = { version = "0.1.29", default-features = false }
 polars = { version = "0.21.1", features = ["lazy", "dtype-categorical", "ipc"] }
 reqwest = { version = "0.11.10", features = ["blocking"] }
-seekable_reader = "0.1.2"

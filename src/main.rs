@@ -1,29 +1,34 @@
 use anyhow::{Context, Result};
 use mimalloc::MiMalloc;
+use polars::export::arrow::io::ipc;
 use polars::prelude::*;
 use reqwest::blocking::Client;
 use reqwest::header::ACCEPT;
-use std::fs::File;
 use std::io::prelude::*;
+use std::io::Cursor;
 
 #[global_allocator]
 static GLOBAL: MiMalloc = MiMalloc;
 
 fn load(table: &str) -> Result<DataFrame> {
     let client = Client::new();
-    let res = client
+    let response = client
         .get(format!("http://localhost:8070/api/tables/{table}"))
         .header(ACCEPT, "application/vnd.apache.arrow.file")
         .send()
         .with_context(|| format!("Failure sending http GET for '{table}'"))?
         .bytes()
-        .with_context(|| format!("Failure taking bytes from respones for '{table}'"))?;
+        .with_context(|| format!("Failure taking bytes from response for '{table}'"))?;
 
-    let mut file = File::create(format!("{table}.file"))
-        .with_context(|| format!("Failure creating file for '{table}'"))?;
-    file.write_all(&res)
-        .with_context(|| format!("Failure writing bytes to file for '{table}'"))?;
-    let ipc = IpcReader::new(file)
+    let mut cursor = Cursor::new(Vec::new());
+    cursor.write_all(&response)?;
+
+    let metadata = ipc::read::read_file_metadata(&mut cursor)
+        .with_context(|| format!("Failure reading arrow metadata for '{table}'"))?;
+
+    let reader = ipc::read::FileReader::new(cursor, metadata, None);
+
+    let ipc = IpcReader::new(reader)
         .finish()
         .with_context(|| format!("Failure finishing ipc-read for '{table}'"))?;
     Ok(ipc)
