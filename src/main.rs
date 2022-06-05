@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{Context, Result};
 use mimalloc::MiMalloc;
 use polars::prelude::*;
 use reqwest::blocking::Client;
@@ -14,12 +14,18 @@ fn load(table: &str) -> Result<DataFrame> {
     let res = client
         .get(format!("http://localhost:8070/api/tables/{table}"))
         .header(ACCEPT, "application/vnd.apache.arrow.file")
-        .send()?
-        .bytes()?;
+        .send()
+        .with_context(|| format!("Failure sending http GET for '{table}'"))?
+        .bytes()
+        .with_context(|| format!("Failure taking bytes from respones for '{table}'"))?;
 
-    let mut file = File::create("response")?;
-    file.write_all(&res)?;
-    let ipc = IpcReader::new(file).finish()?;
+    let mut file = File::create(format!("{table}.file"))
+        .with_context(|| format!("Failure creating file for '{table}'"))?;
+    file.write_all(&res)
+        .with_context(|| format!("Failure writing bytes to file for '{table}'"))?;
+    let ipc = IpcReader::new(file)
+        .finish()
+        .with_context(|| format!("Failure finishing ipc-read for '{table}'"))?;
     Ok(ipc)
 }
 
