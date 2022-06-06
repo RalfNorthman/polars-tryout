@@ -1,6 +1,5 @@
 use anyhow::{Context, Result};
 use mimalloc::MiMalloc;
-use polars::export::arrow::io::ipc;
 use polars::prelude::*;
 use reqwest::blocking::Client;
 use reqwest::header::ACCEPT;
@@ -14,23 +13,20 @@ fn load(table: &str) -> Result<DataFrame> {
     let client = Client::new();
     let response = client
         .get(format!("http://localhost:8070/api/tables/{table}"))
-        .header(ACCEPT, "application/vnd.apache.arrow.file")
+        .header(ACCEPT, "application/parquet")
         .send()
         .with_context(|| format!("Failure sending http GET for '{table}'"))?
         .bytes()
         .with_context(|| format!("Failure taking bytes from response for '{table}'"))?;
 
     let mut cursor = Cursor::new(Vec::new());
-    cursor.write_all(&response)?;
+    cursor
+        .write_all(&response)
+        .with_context(|| format!("Failure writing to cursor for '{table}'"))?;
 
-    let metadata = ipc::read::read_file_metadata(&mut cursor)
-        .with_context(|| format!("Failure reading arrow metadata for '{table}'"))?;
-
-    let reader = ipc::read::FileReader::new(cursor, metadata, None);
-
-    let ipc = IpcReader::new(reader)
+    let ipc = ParquetReader::new(cursor)
         .finish()
-        .with_context(|| format!("Failure finishing ipc-read for '{table}'"))?;
+        .with_context(|| format!("Failure finishing parquet-read for '{table}'"))?;
     Ok(ipc)
 }
 
@@ -41,7 +37,6 @@ fn main() -> Result<()> {
     let inventory_parts = load("inventory_parts")?;
     let inventories = load("inventories")?;
     let sets = load("sets")?;
-    let themes = load("themes")?;
 
     let some_glitters = colors
         .lazy()
