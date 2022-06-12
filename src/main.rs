@@ -28,7 +28,10 @@ fn main() -> Result<()> {
         .filter(col("is_trans").eq(lit("t")))
         .sort_by_exprs(vec![col("name")], vec![false])
         .limit(5);
-    let rand_sets = sets.clone().collect()?.sample_n(5, false, Some(42))?;
+    let rand_sets = sets
+        .clone()
+        .collect()?
+        .sample_n(5, false, false, Some(42))?;
 
     let joined = sets
         .rename(&["name"], &["set_name"])
