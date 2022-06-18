@@ -5,20 +5,17 @@ use polars::prelude::*;
 static GLOBAL: MiMalloc = MiMalloc;
 
 fn main() -> Result<()> {
-    let df1 = df![
-        "a" => [-6_i8, -3, 0],
-    ]?
-    .lazy();
+    let iris = LazyCsvReader::new("iris.csv".to_string())
+        .has_header(true)
+        .finish()?;
 
-    let df2 = df![
-        "b1" => [-6_i8, -4, -2, 0],
-        "b2" => [-6_i8, -4, -2, 0],
-    ]?
-    .lazy();
+    let aggr = iris
+        .filter(col("sepal_length").lt(lit(5_f64)))
+        .groupby([col("species")])
+        .agg([all().sum()])
+        .collect()?;
 
-    let df = df1.inner_join(df2, col("a"), col("b1")).collect()?;
-
-    println!("{df}");
+    println!("{aggr}");
 
     Ok(())
 }
