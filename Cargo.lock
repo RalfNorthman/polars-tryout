@@ -453,6 +453,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "modulo"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "53db447cac1df8402bef9a2ccacb0ea0dd1061b935e9e9ab9e5082c516aaada8"
+
+[[package]]
 name = "multiversion"
 version = "0.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -709,6 +715,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "mimalloc",
+ "modulo",
  "polars",
 ]
 
