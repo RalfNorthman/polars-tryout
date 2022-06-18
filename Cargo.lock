@@ -31,19 +31,17 @@ checksum = "08f9b8508dccb7687a1d6c4ce66b2b0ecef467c94667de27d8d7fe1f8d2a9cdc"
 [[package]]
 name = "arrow2"
 version = "0.12.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5feafd6df4e3f577529e6aa2b9b7cdb3c9fe8e8f66ebc8dc29abbe71a7e968f0"
+source = "git+https://github.com/jorgecarleitao/arrow2?rev=9066298b531054ad7c0253827dd421797bf5684c#9066298b531054ad7c0253827dd421797bf5684c"
 dependencies = [
  "bytemuck",
  "chrono",
- "csv-core",
+ "dyn-clone",
  "either",
  "hash_hasher",
  "lexical-core",
  "multiversion",
  "num-traits",
  "simdutf8",
- "streaming-iterator",
  "strength_reduce",
 ]
 
@@ -214,6 +212,12 @@ dependencies = [
  "redox_users",
  "winapi",
 ]
+
+[[package]]
+name = "dyn-clone"
+version = "1.0.6"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "140206b78fb2bc3edbcfc9b5ccbd0b30699cfe8d348b8b31b330e47df5291a5a"
 
 [[package]]
 name = "either"
@@ -591,8 +595,7 @@ dependencies = [
 [[package]]
 name = "polars"
 version = "0.22.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "71427d55858cdd973ad9011351455cb78851f16db5a097de6de16d34f3ac1bee"
+source = "git+https://github.com/pola-rs/polars.git#dec2a889e4e4ea143dd35f8ef1e9f4f0260c6d7b"
 dependencies = [
  "polars-core",
  "polars-io",
@@ -604,8 +607,7 @@ dependencies = [
 [[package]]
 name = "polars-arrow"
 version = "0.22.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6e4d9a8435b1c81c6a07e5a2be4febbd5b742e046125a13180d82470bda5e9f0"
+source = "git+https://github.com/pola-rs/polars.git#dec2a889e4e4ea143dd35f8ef1e9f4f0260c6d7b"
 dependencies = [
  "arrow2",
  "hashbrown 0.12.1",
@@ -616,8 +618,7 @@ dependencies = [
 [[package]]
 name = "polars-core"
 version = "0.22.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "88a97d027227286850fafb2463ea2b68f0a1925af4ce330ea558ab2828204b9d"
+source = "git+https://github.com/pola-rs/polars.git#dec2a889e4e4ea143dd35f8ef1e9f4f0260c6d7b"
 dependencies = [
  "ahash",
  "anyhow",
@@ -634,14 +635,14 @@ dependencies = [
  "rand_distr",
  "rayon",
  "regex",
+ "smartstring",
  "thiserror",
 ]
 
 [[package]]
 name = "polars-io"
 version = "0.22.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7d0b9cf62d439298d34a1ca0c2f3914fc83746382f52d1eb4c873864f21ba416"
+source = "git+https://github.com/pola-rs/polars.git#dec2a889e4e4ea143dd35f8ef1e9f4f0260c6d7b"
 dependencies = [
  "ahash",
  "anyhow",
@@ -649,6 +650,7 @@ dependencies = [
  "csv-core",
  "dirs",
  "lexical",
+ "lexical-core",
  "memchr",
  "memmap2",
  "num",
@@ -665,8 +667,7 @@ dependencies = [
 [[package]]
 name = "polars-lazy"
 version = "0.22.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "76acd16d955e9b30ed0a60c6bb5df25b8cc75f73c159369dfc9085dcacf207e5"
+source = "git+https://github.com/pola-rs/polars.git#dec2a889e4e4ea143dd35f8ef1e9f4f0260c6d7b"
 dependencies = [
  "ahash",
  "glob",
@@ -683,8 +684,7 @@ dependencies = [
 [[package]]
 name = "polars-ops"
 version = "0.22.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c4d9d8f57e0ef0c70ab8301052419d973b193d835cddab337f7c6ee23d2ab123"
+source = "git+https://github.com/pola-rs/polars.git#dec2a889e4e4ea143dd35f8ef1e9f4f0260c6d7b"
 dependencies = [
  "polars-arrow",
  "polars-core",
@@ -693,8 +693,7 @@ dependencies = [
 [[package]]
 name = "polars-time"
 version = "0.22.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3cc8e36855330dafb9a31e77157745101965b1cee9b50503c58b50d63379d10d"
+source = "git+https://github.com/pola-rs/polars.git#dec2a889e4e4ea143dd35f8ef1e9f4f0260c6d7b"
 dependencies = [
  "chrono",
  "lexical",
@@ -715,8 +714,7 @@ dependencies = [
 [[package]]
 name = "polars-utils"
 version = "0.22.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "057bcf4086ddfcd49e17f688c375bc7a16e1e68205b284277715aa0733674fc8"
+source = "git+https://github.com/pola-rs/polars.git#dec2a889e4e4ea143dd35f8ef1e9f4f0260c6d7b"
 dependencies = [
  "parking_lot",
  "rayon",
@@ -902,16 +900,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f2dd574626839106c320a323308629dcb1acfc96e32a8cba364ddc61ac23ee83"
 
 [[package]]
+name = "smartstring"
+version = "1.0.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3fb72c633efbaa2dd666986505016c32c3044395ceaf881518399d2f4127ee29"
+dependencies = [
+ "autocfg",
+ "static_assertions",
+ "version_check",
+]
+
+[[package]]
 name = "static_assertions"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
-
-[[package]]
-name = "streaming-iterator"
-version = "0.1.5"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "303235c177994a476226b80d076bd333b7b560fb05bd242a10609d11b07f81f5"
 
 [[package]]
 name = "strength_reduce"

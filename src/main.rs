@@ -62,10 +62,12 @@ fn main() -> Result<()> {
             col("color_name"),
             col("quantity"),
         ])
-        .limit(5);
+        .collect()?
+        .sample_n(5, false, false, Some(42))?;
 
-    let mut collected = collect_all([some_glitters, joined])?;
+    let mut collected = collect_all([some_glitters])?;
     collected.push(rand_sets);
+    collected.push(joined);
     for df in collected {
         println!("{}", df);
     }
