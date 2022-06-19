@@ -22,10 +22,26 @@ fn main() -> Result<()> {
     let aggr = iris
         .filter(col("sepal_length").gt(lit(5.0_f64)))
         .groupby([col("species")])
-        .agg([all().sum()])
+        .agg([all().sum()]);
+
+    let no_species = aggr
+        .clone()
+        .select([all().exclude(&["species"])])
         .collect()?;
 
-    println!("{aggr}");
+    let aggr2 = aggr
+        .clone()
+        .select([
+            all(),
+            no_species
+                .hsum(NullStrategy::Ignore)?
+                .unwrap_or_default()
+                .lit()
+                .alias("sum"),
+        ])
+        .collect()?;
+
+    println!("{aggr2}");
     println!("{sel}");
 
     Ok(())
