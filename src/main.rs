@@ -9,6 +9,16 @@ fn main() -> Result<()> {
         .has_header(true)
         .finish()?;
 
+    let sel = iris
+        .clone()
+        .select([
+            col("species").unique().sort(false).head(Some(2)),
+            col("sepal_length")
+                .filter(col("species").eq(lit("virginica")))
+                .median(),
+        ])
+        .collect()?;
+
     let aggr = iris
         .filter(col("sepal_length").gt(lit(5.0_f64)))
         .groupby([col("species")])
@@ -16,6 +26,7 @@ fn main() -> Result<()> {
         .collect()?;
 
     println!("{aggr}");
+    println!("{sel}");
 
     Ok(())
 }
