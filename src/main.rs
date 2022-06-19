@@ -10,7 +10,7 @@ fn main() -> Result<()> {
         .finish()?;
 
     let aggr = iris
-        .filter(col("sepal_length").lt(lit(5_f64)))
+        .filter(col("sepal_length").gt(lit(5.0_f64)))
         .groupby([col("species")])
         .agg([all().sum()])
         .collect()?;
