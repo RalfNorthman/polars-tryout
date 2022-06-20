@@ -9,25 +9,21 @@ fn main() -> Result<()> {
         .has_header(true)
         .finish()?;
 
-    let sel = iris
-        .clone()
+    let df = iris
         .select([
-            col("species").unique().sort(false).head(Some(2)),
+            col("species"),
+            col("sepal_length"),
             col("sepal_length")
-                .filter(col("species").eq(lit("virginica")))
-                .median(),
+                .median()
+                .over([col("species")])
+                .alias("group_median"),
         ])
+        .with_column(
+            (col("sepal_length") / col("group_median") * lit(100.0_f64)).alias("percent_median"),
+        )
         .collect()?;
 
-    let aggr = iris
-        .filter(col("sepal_length").gt(lit(5.0_f64)))
-        .groupby([col("species")])
-        .agg([all().sum()])
-        .select([all(), dtype_cols([DataType::Float64]).sum().suffix("sum")])
-        .collect()?;
-
-    println!("{aggr}");
-    println!("{sel}");
+    println!("{df}");
 
     Ok(())
 }
